@@ -1,22 +1,28 @@
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
-from models import Pessoas, Atividades
+from models import Pessoas, Atividades, Usuarios
 from flask_httpauth import HTTPBasicAuth
 
 auth = HTTPBasicAuth()
 app = Flask(__name__)
 api = Api(app)
 
-USUARIOS = {
-    'elaine':'123',
-    'vanessa': '321'
-}
+#USUARIOS = {
+#    'elaine':'123',
+#    'vanessa': '321'
+#}
+
+# @auth.verify_password
+# def verificacao(login, senha):
+#     if not (login, senha):
+#         return False
+#     return USUARIOS.get(login) == senha
 
 @auth.verify_password
 def verificacao(login, senha):
     if not (login, senha):
         return False
-    return USUARIOS.get(login) == senha
+    return Usuarios.query.filter_by(login=login, senha=senha).first()
 
 class Pessoa(Resource):
     @auth.login_required
